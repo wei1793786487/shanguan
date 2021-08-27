@@ -1,11 +1,19 @@
 package love.loveing.shanguan.tool;
 
+import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
+import cn.hutool.crypto.symmetric.SymmetricCrypto;
+import cn.hutool.log.Log;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import love.loveing.shanguan.pojo.requestAccessToken;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -87,4 +95,16 @@ public class securityTool {
         }
 
     }
+
+
+    public static String encrypt(Object object, byte[] bArr) throws Exception {
+        String content = JSONObject.toJSONString(object,SerializerFeature.WriteNullStringAsEmpty);
+        if (bArr != null) {
+            SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, bArr);
+            return new String(Base64.encodeBase64(aes.encrypt(content)), StandardCharsets.UTF_8);
+        }
+        throw new Exception("decryptAES() null==encodedKey");
+    }
+
+
 }
